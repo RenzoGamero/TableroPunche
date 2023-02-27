@@ -320,9 +320,25 @@ def Generador_DFMetadata2(DFMetadata):
     #'filter_query': '{PAvance} >= 0 && {PAvance} <= 10',
     DFMetadata2['PA']= DFMetadata2['PAvance_'].astype(int)
 
-    DFMetadata2.loc[(DFMetadata2['Pt_'] >= 0) & (DFMetadata2['Pt_'] <=10) , 'Comentario'] = "Alerta"
-    DFMetadata2.loc[(DFMetadata2['Pt_'] >= 11) & (DFMetadata2['Pt_'] <=69) ,'Comentario'] = "En proceso"
-    DFMetadata2.loc[(DFMetadata2['Pt_'] >= 70) & (DFMetadata2['Pt_'] <=100) , 'Comentario'] = "Optimo"
+    DFMetadata2.loc[(DFMetadata2['Pt_'] >= 0)  & (DFMetadata2['Pt_'] <=10)  , 'Comentario'] = "Alerta"
+    DFMetadata2.loc[(DFMetadata2['Pt_'] >= 11) & (DFMetadata2['Pt_'] <=69)  , 'Comentario'] = "En proceso"
+    DFMetadata2.loc[(DFMetadata2['Pt_'] >= 70) & (DFMetadata2['Pt_'] <=100) , 'Comentario'] = "Óptimo"
+
+
+    """
+    Alerta (Todo Rojo):
+    - Hito retrasado
+    - Actividad en riesgo( no mencionar la tarea - solo el retraso de la actividad )
+    
+ 
+    Comentario: 
+    - Especificar los dias de retraso en meses y dias 
+    - motivo del retraso , actividad secuencial , actividad paralela - % buffer 
+      comprometio el cronograma? 
+
+
+    """
+
 
 
     DFMetadata3=(DFMetadata2[(DFMetadata2['N2']==0) & (DFMetadata2['N1']== 1) ])
@@ -537,7 +553,6 @@ def draw5():
         ),  
     ])
 
-
 def draw2():
     return  html.Div([
         dbc.Card(
@@ -592,7 +607,7 @@ def getcriterio():
 
 
                         #{'name': 'PAvance',         'id': 'PAvance',        'type': 'numeric',     'editable': True,        'format':  {"specifier": "$,.2f", "locale": {"symbol": ["", "%"]}}},
-                        {'name': '% de Avance',         'id': 'Pt_str0',        'type': 'numeric', 'editable': True},
+                        {'name': '% de Avance',         'id': 'Pt_str0',        'type': 'numeric', 'editable': True, 'min':0,'max':100},
                         {'name': 'Responsable',     'id': 'Responsable',    'type': 'text',     'editable': False},
                         #{'name': 'C',     'id': 'C',    'type': 'text',     'editable': False},
                     ]
@@ -800,16 +815,17 @@ def drawF():
                         },
                        
 
-                        #{
-                        #    'if': {
-                        #        'filter_query': '{Hitos} == 1',
-                        #        'column_id': 'Actividad'
-                        #    },
-                        #    "fontWeight": "bold",
-                        #},
+                        {
+                            'if': {
+                                'filter_query': '{Hitos} = 1',
+                                'column_id': ['Actividad', 'Tarea','Subtarea','Inicio', 'Fin','Alerta','Pt_str0','Responsable']
+                           },
+                            "fontWeight": "bold",
+                        #'backgroundColor': '#ff7e00',
+                            #'color': 'dark'
+                        },
 
 
-                        
                         
 
                     ]
@@ -1032,12 +1048,12 @@ sidebar = html.Div(
                 #dbc.NavLink("Home", href="/", active="exact"),
                dbc.NavLink("Avance de las medidas", href="/page-1", active="exact"),
                dbc.NavLink("Seguimiento",           href="/page-2", active="exact"),
-               dbc.NavLink("Actividades Diarias",    href="/page-3", active="exact"),
-               dbc.NavLink("Consulta Amigable",    href="/page-4", active="exact"),
+               dbc.NavLink("Actividades Diarias",   href="/page-3", active="exact"),
+               dbc.NavLink("Consulta Amigable",     href="/page-4", active="exact"),
 
             ],
             vertical=True,
-            pills=True,
+            pills=True
         ),
     ],
     style=SIDEBAR_STYLE,
@@ -1210,9 +1226,16 @@ def render_page_content(pathname):
             #    id="button",
             #    className="mb-3",
             #),
+ #'if': {'column_id': c},
+ #                   'textAlign': 'left'
+ #               } for c in ['Date', 'Region']
+            
+        #for c in ['Date', 'Region']
+
             dbc.Tabs(
                 [
                  
+
                     dbc.Tab(label="Kathy", tab_id="tab_Kathy"),
                     dbc.Tab(label="Angel", tab_id="tab_Angel"),
                     dbc.Tab(label="Antonio", tab_id="tab_Antonio"),
@@ -1314,20 +1337,23 @@ def render_tab_content(active_tab, data):
 
         if active_tab == "tab_Kathy":
 
+
+
+#for c in ['Date', 'Region']
             alerts = html.Div([
                 #dbc.Alert("This is a primary alert", color="primary"),
                 #dbc.Alert("This is a secondary alert", color="secondary"),
                 #dbc.Alert("Actividad 1: concluida", color="success",
                 #    dismissable=True),
 
-                dbc.Alert("Actividad 3: vencida y avance al 0% ",           color="danger",dismissable=True),
+                    dbc.Alert("Actividad 3: vencida y avance al 0% ",           color="danger",dismissable=True) ,
                 dbc.Alert("Actividad 2: queda 1 día para su vencimiento.",  color="warning",dismissable=True),
 
-            ])
+            ]for c in ['Date', 'Region'])
 
             return alerts
-        elif active_tab == "tab2":
-            alerts = html.Div([
+        elif active_tab == "tab_Angel":
+            alerts0 = html.Div([
                 #dbc.Alert("This is a primary alert", color="primary"),
                 #dbc.Alert("This is a secondary alert", color="secondary"),
                 dbc.Alert("Actividad 1: concluida", color="success"),
@@ -1335,8 +1361,11 @@ def render_tab_content(active_tab, data):
                 dbc.Alert("Actividad 3: vencida y avance al 0% ", color="danger"),
 
             ])
-
-            return alerts
+            portfolio_list=['1', '2']
+            alerts1 = html.Div([
+                
+               [dbc.Alert("Actividad 1: concluida", color="success") for portfolio in (portfolio_list)] ])
+            return alerts1
     return " --- "
 
 
