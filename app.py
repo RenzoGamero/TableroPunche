@@ -635,12 +635,13 @@ def getcriterio():
         print("gcols 1")
 
         return columnsCriterio2
+
 def drawF():
     return dbc.Card(
             children=[
                 
         
-                dbc.CardHeader("Tabla de Hitos"),
+                dbc.CardHeader(""),
                 dbc.CardBody(
                     [
                         
@@ -785,8 +786,6 @@ def drawF():
                         'border': '1px solid rgb(0, 116, 217)'
                         },
 
-
-  
                     
                     {'if': {'column_id': 'Actividad'},   'textAlign': 'left'},     
                     {'if': {'column_id': 'Subtarea'},    'textAlign': 'left'},     
@@ -810,7 +809,8 @@ def drawF():
                                 'filter_query': '{PAvance} >= 40 && {PAvance} <= 89',
                                 'column_id': 'Pt_str0'
                             },
-                            'backgroundColor': '#ff7e00',
+                            #'backgroundColor': '#ff7e00',
+                            'backgroundColor':'#9ad69e',
                             'color': 'dark'
                         },
                        
@@ -839,7 +839,7 @@ def drawF():
 def drawF_mini():
     return dbc.Card(
             children=[
-                dbc.CardHeader("Tabla de Hitos"),
+                dbc.CardHeader(""),
                 dbc.CardBody(
                     [
                         
@@ -952,7 +952,7 @@ def drawF_mini():
                 ],color="#3d6aa7"
 )
 
-l=DFMetadata['N_'].unique().tolist()
+l = DFMetadata['N_'].unique().tolist()
 
 def desplegable_medidas():
     

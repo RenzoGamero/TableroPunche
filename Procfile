@@ -1,1 +1,1 @@
-web: gunicorn main:app
+gunicorn graph:app.server -b :8888
