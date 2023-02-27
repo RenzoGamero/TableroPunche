@@ -1429,6 +1429,11 @@ if __name__ == "__main__":
 
 """
 
+web: gunicorn main:app
+
+
+
+
 añdir leyenda
 
 
