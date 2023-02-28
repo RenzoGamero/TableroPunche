@@ -403,23 +403,31 @@ df2['Avance%'] = df2['Avance%'].round(2)
 df3 = DFBD.groupby(['TIPO_GOBIERNO_NOMBRE', 'Act'])['MONTO_DEVENGADO', 'MONTO_PIM'].sum()
 #print(df3)
 df3['Avance%']= (df3['MONTO_DEVENGADO'] / df3['MONTO_PIM'])*100
-df3['TIPO_GOBIERNO_NOMBRE']=df3.index
 
-df3[['b1', 'b2']] = pd.DataFrame(df3['TIPO_GOBIERNO_NOMBRE'].tolist(), index=df3.index)
+try: 
 
-print(df3)
+    df3['TIPO_GOBIERNO_NOMBRE']=df3.index
+
+    df3[['b1', 'b2']] = pd.DataFrame(df3['TIPO_GOBIERNO_NOMBRE'].tolist(), index=df3.index)
+
+    print(df3)
 
 
 
 
-labels0  = df2['TIPO_GOBIERNO_NOMBRE'].unique().tolist()            +df3['b2'].tolist()
-parents0 = [""]*len(df2['TIPO_GOBIERNO_NOMBRE'].unique().tolist())  +df3['b1'].tolist()
-values0  = df2['Avance%'].unique().tolist()                         +df3['Avance%'].tolist()
+    labels0  = df2['TIPO_GOBIERNO_NOMBRE'].unique().tolist()            +df3['b2'].tolist()
+    parents0 = [""]*len(df2['TIPO_GOBIERNO_NOMBRE'].unique().tolist())  +df3['b1'].tolist()
+    values0  = df2['Avance%'].unique().tolist()                         +df3['Avance%'].tolist()
 
-print('labels=  ', labels0 )
-print('parents= ', parents0)
-print('values=  ', values0 )
+    print('labels=  ', labels0 )
+    print('parents= ', parents0)
+    print('values=  ', values0 )
 
+except:
+    labels0=[]
+    parents0=[]
+    values0=[]
+    
 print(df3[['b1', 'b2', 'Avance%']])
 
 
@@ -1432,7 +1440,7 @@ if __name__ == "__main__":
 web: gunicorn main:app
 
 
-
+gunicorn app:app.server -b :8888
 
 añdir leyenda
 
