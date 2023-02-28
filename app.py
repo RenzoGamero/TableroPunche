@@ -427,7 +427,7 @@ except:
     labels0=[]
     parents0=[]
     values0=[]
-    
+
 print(df3[['b1', 'b2', 'Avance%']])
 
 
@@ -1009,6 +1009,9 @@ def desplegable_legal():
 
 
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
+server=app.server
+
+
 
 # the style arguments for the sidebar. We use position:fixed and a fixed width
 SIDEBAR_STYLE = {
