@@ -42,9 +42,6 @@ from dash.dash_table.Format import Sign
 
 ################################################################
 ################################################################
-import dash_mantine_components as dmc
-from dash import callback, html, Output, Input
-from dash_iconify import DashIconify
 
 
 import pygsheets
@@ -808,7 +805,10 @@ def drawF():
                                 'filter_query': '{PAvance} >= 90 && {PAvance} <= 100',
                                 'column_id': 'Pt_str0'
                             },
-                            'backgroundColor': '#57f261',
+                            #'backgroundColor': '#57f261',
+                            'backgroundColor': '#9ad69e',
+
+                            
                             'color': 'dark'
                         },
                         {
