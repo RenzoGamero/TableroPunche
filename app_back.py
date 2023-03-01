@@ -1,11 +1,15 @@
-import dash
-import dash_bootstrap_components as dbc
-import dash_core_components as dcc
-import dash_html_components as html
-from dash.dependencies import Input, Output, State
+"""
+This app creates a simple sidebar layout using inline style arguments and the
+dbc.Nav component.
 
+dcc.Location is used to track the current location, and a callback uses the
+current location to render the appropriate page content. The active prop of
+each NavLink is set automatically according to the current pathname. To use
+this feature you must install dash-bootstrap-components >= 0.11.0.
 
-
+For more details on building multi-page Dash applications, check out the Dash
+documentation: https://dash.plot.ly/urls
+"""
 import dash
 import dash_bootstrap_components as dbc
 from dash import Input, Output, dcc, html
@@ -448,6 +452,7 @@ def pag0():
             ])
         ),
     ])
+
 
 # Text field
 def Hitos():
@@ -1008,192 +1013,129 @@ def desplegable_legal():
 
 
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
-
-
-app1= dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
-app2= dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
-app3= dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
-app4= dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
-
-
 server=app.server
 
-import base64
 
-
-test_png = 'conpunche3.png'
-test_base64 = base64.b64encode(open(test_png, 'rb').read()).decode('ascii')
-
-navbar = dbc.NavbarSimple(
-    children=[
-        dbc.Button("Sidebar", outline=True, color="secondary", className="mr-1", id="btn_sidebar"),
-        #dbc.NavItem(dbc.NavLink("Page 1", href="#")),
-        #dbc.DropdownMenu(
-        #    children=[
-        #        dbc.DropdownMenuItem("More pages", header=True),
-        #        dbc.DropdownMenuItem("Page 2", href="#"),
-        #        dbc.DropdownMenuItem("Page 3", href="#"),
-        #    ],
-        #    nav=True,
-        #    in_navbar=True,
-        #    label="More"
-        #),
-    ],
-    brand="",
-    brand_href="#",
-    color="dark",
-    dark=True,
-    fluid=True
-)
 
 
 # the style arguments for the sidebar. We use position:fixed and a fixed width
 SIDEBAR_STYLE = {
     "position": "fixed",
-    "top": 62.5,
+    "top": 0,
     "left": 0,
     "bottom": 0,
     "width": "19rem",
-    "height": "100%",
-    "z-index": 1,
-    "overflow-x": "hidden",
-    "transition": "all 0.5s",
-    "padding": "0.5rem 1rem",
+    "padding": "2rem 1rem",
     "background-color": "#9cabb9",
 }
-
-SIDEBAR_HIDEN = {
-    "position": "fixed",
-    "top": 62.5,
-    "left": "-16rem",
-    "bottom": 0,
-    "width": "16rem",
-    "height": "100%",
-    "z-index": 1,
-    "overflow-x": "hidden",
-    "transition": "all 0.5s",
-    "padding": "0rem 0rem",
-    "background-color": "#f8f9fa",
-}
+#f8f9fa gris
+#455260
+#9cabb9
 # the styles for the main content position it to the right of the sidebar and
 # add some padding.
 CONTENT_STYLE = {
-    "transition": "margin-left .5s",
     "margin-left": "18rem",
     "margin-right": "2rem",
     "padding": "2rem 1rem",
-    "background-color": "#f8f9fa",
 }
 
-CONTENT_STYLE1 = {
-    "transition": "margin-left .5s",
-    "margin-left": "2rem",
-    "margin-right": "2rem",
-    "padding": "2rem 1rem",
-    "background-color": "#f8f9fa",
-}
+
+import base64
+#image_filename = 'MEF_img_1.png' # replace with your own image
+#encoded_image = base64.b64encode(open(image_filename, 'rb').read())
+
+
+
+test_png = 'conpunche3.png'
+test_base64 = base64.b64encode(open(test_png, 'rb').read()).decode('ascii')
+
+#        #style={'height':'40%', 'width':'80%'}),
+
 
 sidebar = html.Div(
     [
-        #html.H2(" ", className="display-4"),
-        html.Hr(),
+        html.H2("", className="display-4"),
         html.Img(src='data:image/png;base64,{}'.format(test_base64)), 
-
+        html.Hr(),
         html.P(
-            "", className="lead"
+            " ", className="lead"
         ),
         dbc.Nav(
             [
-#                dbc.NavLink("Page 1", href="/page-1", id="page-1-link"),
-#                dbc.NavLink("Page 2", href="/page-2", id="page-2-link"),
-#                dbc.NavLink("Page 3", href="/page-3", id="page-3-link"),
+                #dbc.NavLink("Home", href="/", active="exact"),
                dbc.NavLink("Avance de las medidas", href="/page-1", active="exact"),
                dbc.NavLink("Seguimiento",           href="/page-2", active="exact"),
                dbc.NavLink("Actividades Diarias",   href="/page-3", active="exact"),
                dbc.NavLink("Consulta Amigable",     href="/page-4", active="exact"),
-
 
             ],
             vertical=True,
             pills=True
         ),
     ],
-    id="sidebar",
     style=SIDEBAR_STYLE,
 )
 
-content = html.Div(
+content = html.Div(id="page-content", style=CONTENT_STYLE)
 
-    id="page-content",
-    style=CONTENT_STYLE)
-
-app.layout = html.Div(
-    [
-        dcc.Store(id='side_click'),
-        dcc.Location(id="url"),
-        navbar,
-        sidebar,
-        content,
-    ],
-)
-
-
-@app.callback(
-    [
-        Output("sidebar", "style"),
-        Output("page-content", "style"),
-        Output("side_click", "data"),
-    ],
-
-    [Input("btn_sidebar", "n_clicks")],
-    [
-        State("side_click", "data"),
-    ]
-)
-def toggle_sidebar(n, nclick):
-    if n:
-        if nclick == "SHOW":
-            sidebar_style = SIDEBAR_HIDEN
-            content_style = CONTENT_STYLE1
-            cur_nclick = "HIDDEN"
-        else:
-            sidebar_style = SIDEBAR_STYLE
-            content_style = CONTENT_STYLE
-            cur_nclick = "SHOW"
-    else:
-        sidebar_style = SIDEBAR_STYLE
-        content_style = CONTENT_STYLE
-        cur_nclick = 'SHOW'
-
-    return sidebar_style, content_style, cur_nclick
-
-# this callback uses the current pathname to set the active state of the
-# corresponding nav link to true, allowing users to tell see page they are on
-@app.callback(
-    [Output(f"page-{i}-link", "active") for i in range(1, 4)],
-    [Input("url", "pathname")],
-)
-def toggle_active_links(pathname):
-    if pathname == "/":
-        # Treat page 1 as the homepage / index
-        return True, False, False
-    return [pathname == f"/page-{i}" for i in range(1, 4)]
+app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
 
 
 @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
 def render_page_content(pathname):
-    #if pathname in ["/", "/page-1"]:
-    #    return html.P("This is the content of page 1!")
-    #elif pathname == "/page-2":
-    #    return html.P("This is the content of page 2. Yay!")
-    #elif pathname == "/page-3":
-    #    return html.P("Oh cool, this is page 3!")
-    # If the user tries to reach a different page, return a 404 message
-    
-    if pathname in ["/", "/page-1"]:
+    if pathname == "/":
+        #return html.P("This is the content of the home page!")
+
+
+        app.layout = html.Div([
+            dbc.Card(
+                dbc.CardBody([
+                    dbc.Row([
+                        dbc.Col([
+                            pag0()
+                        ], width=12),
+                        #dbc.Col([
+                        #    drawText()
+                        #], width=3),
+                        #dbc.Col([
+                        #    drawText()
+                        #], width=3),
+                        #dbc.Col([
+                        #    drawText()
+                        #], width=3),
+                    ], align='center'), 
+                    html.Br(),
+                    dbc.Row([
+                        #dbc.Col([
+                        #    desplegable_medidas() 
+                        #], width=3),
+                        #dbc.Col([
+                        #    #drawFigure()
+                        #    c()
+                        #], width=2),
+                    #    dbc.Col([
+                    #        drawF() 
+                    #    ], width=12),
+                    ], align='center'), 
+                    html.Br(),
+                    dbc.Row([
+                        #dbc.Col([
+                        #    c()
+                        #], width=2),
+                        #dbc.Col([
+                        #    drawF_mini()
+                        #], width=12),
+                    ], align='center'),      
+                ]), color = 'Dark'
+            )
+        ])
+        #return html.P("This is the content of page 1. Yay!")
+        return app.layout
+
+    elif pathname == "/page-1":
         
 
-        app1.layout = html.Div([
+        app.layout = html.Div([
             dbc.Card(
                 dbc.CardBody([
                     dbc.Row([
@@ -1236,10 +1178,10 @@ def render_page_content(pathname):
             )
         ])
         #return html.P("This is the content of page 1. Yay!")
-        return app1.layout
+        return app.layout
     elif pathname == "/page-2":
 
-        app2.layout = html.Div([
+        app.layout = html.Div([
             dbc.Card(
                 dbc.CardBody([
                     dbc.Row([
@@ -1288,10 +1230,10 @@ def render_page_content(pathname):
             )
         ])
         #return html.P("This is the content of page 1. Yay!")
-        return app2.layout
+        return app.layout
     elif pathname == "/page-3":
 
-        app3.layout = dbc.Container([
+        app.layout = dbc.Container([
             dcc.Store(id="store"),
             html.H1("Alerta de actividades diarias"),
             html.Hr(),
@@ -1323,10 +1265,10 @@ def render_page_content(pathname):
         ])
 
         #return html.P("This is the content of page 1. Yay!")
-        return app3.layout
+        return app.layout
     elif pathname == "/page-4":
 
-        app4.layout = html.Div([
+        app.layout = html.Div([
             dbc.Card(
                 dbc.CardBody([
                     dbc.Row([
@@ -1378,16 +1320,15 @@ def render_page_content(pathname):
             )
         ])
         #return html.P("This is the content of page 1. Yay!")
-        return app4.layout
-    # If the user tries to reach a different pa
-    
-    
-    return dbc.Jumbotron(
+        return app.layout
+    # If the user tries to reach a different page, return a 404 message
+    return html.Div(
         [
             html.H1("404: Not found", className="text-danger"),
             html.Hr(),
             html.P(f"The pathname {pathname} was not recognised..."),
-        ]
+        ],
+        className="p-3 bg-light rounded-3",
     )
 
 
@@ -1481,13 +1422,55 @@ def display_table(state,state2):
 #    Output("datable_full", "data"), 
 #    Input("demo-dropdown2", "value")
 #)
-#def display_table(state):
+def display_table(state):
 #    global DFMetadata    
-#    print('state2= ', state)      
+    print('state2= ', state)      
 #    #DFMetadata_= DFMetadata[DFMetadata['N_'].isin([state])]
 #    #return DFMetadata_.to_dict("records")
 
 
 
+#0090d1 celeste
+
+#3d6aa7 azul
+
+#018444 verde
+
+#005b91 azul 2
+
+
 if __name__ == "__main__":
-    app.run_server( port=8086)
+    app.run_server(port=8888)
+
+
+
+"""
+
+web: gunicorn main:app
+
+
+gunicorn app:app.server -b :8888
+
+añdir leyenda
+
+
+nivel de gobierno 
+
+productos y70 activifsafrd
+
+
+
+alerta
+
+
+aviso al cronograma 
+
+alerrta a los hitos 
+
+
+
+
+Cambiar de tipo de letra 
+
+hitos en negrita 
+"""
