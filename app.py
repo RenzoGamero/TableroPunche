@@ -39,7 +39,7 @@ import plotly.express as px
 
 import dash.dash_table.FormatTemplate as FormatTemplate
 from dash.dash_table.Format import Sign
-
+from dash.dash_table.Format import Format, Scheme, Sign, Symbol
 ################################################################
 ################################################################
 
@@ -259,6 +259,9 @@ def Generador_DFMetadata(DFMetadata):
     DFMetadata['Alerta'] =""
 
     DFMetadata.loc[(DFMetadata['diff'] > 0) & (DFMetadata['diff'] <= 5)& (DFMetadata['PAvance'] != 100) , 'Alerta'] =  "Quedan <= 5 dias"
+    DFMetadata.loc[(DFMetadata['diff'] <-1) & (DFMetadata['PAvance'] != 100) , 'Alerta'] =  "Retraso "
+
+    DFMetadata.loc[(DFMetadata['diff'] == -1)& (DFMetadata['PAvance'] != 100) , 'Alerta'] =  "Vence hoy"
 
 
     # Pendietne enproceso cumplio ""
@@ -610,8 +613,25 @@ def getcriterio():
                         #{'name': 'diff',          'id': 'diff',         'type': 'numeric',  'editable': False},
 
 
+                        #
                         #{'name': 'PAvance',         'id': 'PAvance',        'type': 'numeric',     'editable': True,        'format':  {"specifier": "$,.2f", "locale": {"symbol": ["", "%"]}}},
-                        {'name': '% de Avance',         'id': 'Pt_str0',        'type': 'numeric', 'editable': True, 'min':0,'max':100},
+                        {'name': '% de Avance',         'id': 'PAvance',        'type': 'numeric',     'editable': True,       'format': Format(
+                nully='N/A',
+                precision=0,
+                scheme=Scheme.fixed,
+                sign=Sign.parantheses,
+                symbol=Symbol.yes,
+                symbol_suffix=u' %'
+            )},
+                        
+            #            {'name': '% de Avance',         'id': 'Pt_str0',        'type': 'numeric', 'editable': True, 'min':0,'max':100 ,'format': Format(
+            #    nully='N/A',
+            #    precision=0,
+            #    scheme=Scheme.fixed,
+            #    sign=Sign.parantheses,
+            #    symbol=Symbol.yes,
+            #    symbol_suffix=u' %'
+            #)},
                         {'name': 'Responsable',     'id': 'Responsable',    'type': 'text',     'editable': False},
                         #{'name': 'C',     'id': 'C',    'type': 'text',     'editable': False},
                     ]
@@ -745,31 +765,27 @@ def drawF():
                         #    'backgroundColor': 'darkred',
                         #     'color': 'dark'
                         #},
-                        {
-                            'if': {
-                                'filter_query': '{PAvance} >= 90 && {PAvance} <= 100',
-                                #'column_id': 'PAvance'
-                                 'column_id': 'PAvance'
-                                
-                            },
-                            #'backgroundColor': 'green',
-                            #'backgroundColor': '#57f261',
-                            'backgroundColor': '#red',
-
-
-                            'color': 'dark'
-                        },
- {
-                            'if': {
-                                'filter_query': '{Pt_str0} >= 90 && {Pt_str0} <= 100',
-                                 'column_id': 'Pt_str0'
-                                
-                            },
-                            'backgroundColor': 'red',
-
-
-                            'color': 'dark'
-                        },
+                        #{
+                        #    'if': {
+                        #        'filter_query': '{PAvance} >= 90 && {PAvance} <= 100',
+                        #        #'column_id': 'PAvance'
+                        #         'column_id': 'PAvance'
+                        #        
+                        #    },
+                        #    #'backgroundColor': 'green',
+                        #    #'backgroundColor': '#57f261',
+                        #    'backgroundColor': '#red',
+                        #    'color': 'dark'
+                        #},
+                        
+                        #{
+                        #    'if': {
+                        #        'filter_query': '{Pt_str0} >= 90 && {Pt_str0} <= 100',
+                        #         'column_id': 'Pt_str0'    
+                        #    },
+                        #    'backgroundColor': 'red',
+                        #    'color': 'dark'
+                        #},
 
 
 
@@ -803,24 +819,31 @@ def drawF():
                          {
                             'if': {
                                 'filter_query': '{PAvance} >= 90 && {PAvance} <= 100',
-                                'column_id': 'Pt_str0'
+                                'column_id': 'PAvance'
                             },
                             #'backgroundColor': '#57f261',
-                            'backgroundColor': '#9ad69e',
-
-                            
+                            'backgroundColor': '#9ad69e',                            
                             'color': 'dark'
                         },
                         {
                             'if': {
                                 'filter_query': '{PAvance} >= 40 && {PAvance} <= 89',
-                                'column_id': 'Pt_str0'
+                                'column_id': 'PAvance'
                             },
                             #'backgroundColor': '#ff7e00',
-                            'backgroundColor':'#9ad69e',
+                            'backgroundColor':'#f2c957',
                             'color': 'dark'
                         },
-                       
+                       #{
+                       #     'if': {
+                       #         'filter_query': '{PAvance} >= 0 && {PAvance} <= 39',
+                       #         'column_id': 'PAvance'
+                       #     },
+                       #     #'backgroundColor': '#ff7e00',
+                       #     'backgroundColor':'red',
+                       #     'color': 'dark'
+                       # },
+
 
                         {
                             'if': {
@@ -930,7 +953,7 @@ def drawF_mini():
                     {
                         'if': {
                             'filter_query': '{PAvance} >= 70 && {PAvance} <= 100',
-                            'column_id': 'Pt_str'
+                            'column_id': 'Comentario'
                         },
                         'backgroundColor': '#57f261',
                         'color': 'dark'
@@ -938,7 +961,7 @@ def drawF_mini():
                      {
                         'if': {
                             'filter_query': '{PAvance} >= 11 && {PAvance} <= 69',
-                            'column_id': 'Pt_str'
+                            'column_id': 'Comentario'
                         },
                         'backgroundColor': '#f2c957',
                         'color': 'dark'
@@ -946,7 +969,7 @@ def drawF_mini():
                     {
                         'if': {
                             'filter_query': '{PAvance} >= 0 && {PAvance} <= 10',
-                            'column_id': 'Pt_str'
+                            'column_id': 'Comentario'
                         },
                         'backgroundColor': '#ed6145',
                         'color': 'dark'
@@ -1346,7 +1369,7 @@ def render_page_content(pathname):
                     html.Br(),
                     dbc.Row([
                         dbc.Col([
-                            draw4() 
+                            draw5() 
                         ], width=6),
                         dbc.Col([
                             #drawFigure()
@@ -1408,40 +1431,38 @@ def render_tab_content(active_tab, data):
 
     print(DFMetadata['Alerta'].unique())
 
+
+                 #   dbc.Tab(label="Kathy", tab_id="tab_Kathy"),
+                 #   dbc.Tab(label="Angel", tab_id="tab_Angel"),
+                 #   dbc.Tab(label="Antonio", tab_id="tab_Antonio"),
+
     #if active_tab and data is not None:
     if active_tab :
 
         if active_tab == "tab_Kathy":
 
+            alerts01 = html.Div([
+                dbc.Alert("Servir - Actividad retrasada: Aprobación de RPE (perfiles, indicadores, metas y criterios de evaluación)", color="danger"),
+            ])  
+            return alerts01   
 
-
-#for c in ['Date', 'Region']
-            alerts = html.Div([
-                #dbc.Alert("This is a primary alert", color="primary"),
-                #dbc.Alert("This is a secondary alert", color="secondary"),
-                #dbc.Alert("Actividad 1: concluida", color="success",
-                #    dismissable=True),
-
-                    dbc.Alert("Actividad 3: vencida y avance al 0% ",           color="danger",dismissable=True) ,
-                dbc.Alert("Actividad 2: queda 1 día para su vencimiento.",  color="warning",dismissable=True),
-
-            ]for c in ['Date', 'Region'])
-
-            return alerts
         elif active_tab == "tab_Angel":
-            alerts0 = html.Div([
-                #dbc.Alert("This is a primary alert", color="primary"),
-                #dbc.Alert("This is a secondary alert", color="secondary"),
-                dbc.Alert("Actividad 1: concluida", color="success"),
-                dbc.Alert("Actividad 2: qsueda 1 día para su vencimiento.", color="warning"),
-                dbc.Alert("Actividad 3: vencida y avance al 0% ", color="danger"),
+            
+            alerts02 = html.Div([
+                dbc.Alert("Ollas comunes - Actividad vence hoy: Inicio de entrega de alimentos de las Municipalidades a las OC", color="warning"),
+            ])  
+            return alerts02
+        elif active_tab == "tab_Antonio":
+            alerts03 = html.Div([
+                dbc.Alert("Subvencion Artistas - Actividad Retrasada: PLANIFICACIÓN Y ORGANIZACIÓN DE LA INTERVENCIÓN.", color="danger"),
+                dbc.Alert("Subvencion Artistas - Actividad Retrasada: GESTIÓN DEL COBRO DE BENEFICIARIOS/AS", color="danger"),
+            ])  
+            
+            return alerts03
 
-            ])
-            portfolio_list=['1', '2']
-            alerts1 = html.Div([
-                
-               [dbc.Alert("Actividad 1: concluida", color="success") for portfolio in (portfolio_list)] ])
-            return alerts1
+
+
+        
     return " --- "
 
 
