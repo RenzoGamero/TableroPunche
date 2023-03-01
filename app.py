@@ -1486,6 +1486,7 @@ def display_table(state,state2):
     print('state2= ', state2)      
     gcols= 0
     
+    
     #l=["Criterio 1","Criterio 2"]
     #if state2=="Criterio 1":
     #    gcols= 0
